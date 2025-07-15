@@ -104,7 +104,7 @@ module Homebrew
             else
               message + "\n\n"
             end
-  message += '[`action-homebrew-bump-cask`](https://github.com/eugenesvk/action-homebrew-bump-cask)'
+  message += '[`action-homebrew-bump-cask`](https://github.com/IssacL891/action-homebrew-bump-cask)'
 
   unless force.false?
     brew_repo = read_brew '--repository'

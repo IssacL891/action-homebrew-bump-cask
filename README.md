@@ -30,7 +30,7 @@ The Action will extract all needed informations by itself, you just need to spec
 
 ```yaml
 - name: Update Homebrew cask
-  uses: eugenesvk/action-homebrew-bump-cask@a05fd49892799eade237259963d787ba0143dab1 #3.8.5, commit to avoid security issues since tags can be changed
+  uses: IssacL891/action-homebrew-bump-cask@a05fd49892799eade237259963d787ba0143dab1 #3.8.5, commit to avoid security issues since tags can be changed
   with:
     token     	: ${{secrets.TOKEN}}	# Required, custom personal GitHub access token with the 'public_repo' and 'workflow' scopes
     cask      	: CASK              	# Required  Cask name
@@ -54,7 +54,7 @@ If there are no outdated casks, the Action will just exit.
 
 ```yaml
 - name: Update Homebrew cask
-  uses: eugenesvk/action-homebrew-bump-cask@a05fd49892799eade237259963d787ba0143dab1 #3.8.5, commit to avoid security issues since tags can be changed
+  uses: IssacL891/action-homebrew-bump-cask@a05fd49892799eade237259963d787ba0143dab1 #3.8.5, commit to avoid security issues since tags can be changed
   with:
     token     	: ${{secrets.TOKEN}}         	# Required, custom personal GitHub access token with only the 'public_repo' scope enabled
     cask      	: CASK-1, CASK-2, CASK-3, ...	# Bump only these casks if outdated
@@ -69,7 +69,7 @@ If there are no outdated casks, the Action will just exit.
 If only `tap` input is provided, all casks in given tap will be checked and bumped if needed.
 
 ## Examples
-https://github.com/eugenesvk/homebrew-bump/blob/main/.github/workflows/bump_homebrew_cask.yml
+https://github.com/IssacL891/homebrew-bump/blob/main/.github/workflows/bump_homebrew_cask.yml
 
 ## Known issues
 

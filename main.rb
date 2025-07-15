@@ -159,7 +159,7 @@ module Homebrew
       'livecheck',
       '--cask',
       # '--quiet', # don't suppress error output in logs
-      # '--newer-only', # breaks for some casks
+      '--newer-only'
       '--full-name',
       '--json',
       *("--tap=#{tap_path}" if !tap_path.blank? && cask_full_name.blank?),

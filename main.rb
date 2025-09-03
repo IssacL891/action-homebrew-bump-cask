@@ -178,26 +178,28 @@ module Homebrew
       cask_name = info['cask']
       latest_version = info['version']['latest']
       current_version = info['version']['current']
+      latest_version_comparision = latest_version
+      current_version_comparision = current_version
 
-      # mangayomi doesn't follow convention. Need to fix format to 0.0.00 e.g. 0.6.5 -> 0.6.50
+      # mangayomi doesn't follow convention. Need to fix format to 0.0.00 e.g. 0.6.5 -> 0.6.50 for comparision
       if cask_name.split('/').last == 'mangayomi'
         # Pad patch version with zero if only one digit
-        if latest_version =~ /^(\d+\.\d+)\.(\d)$/
-          latest_version = "#{$1}.#{$2}0"
+        if latest_version_comparision =~ /^(\d+\.\d+)\.(\d)$/
+          latest_version_comparision = "#{$1}.#{$2}0"
         elsif latest_version =~ /^(\d+\.\d+)\.(\d{2,})$/
-          latest_version = latest_version
+          latest_version_comparision = latest_version
         end
-        if current_version =~ /^(\d+\.\d+)\.(\d)$/
-          current_version = "#{$1}.#{$2}0"
+        if current_version_comparision =~ /^(\d+\.\d+)\.(\d)$/
+          current_version_comparision = "#{$1}.#{$2}0"
         elsif current_version =~ /^(\d+\.\d+)\.(\d{2,})$/
-          current_version = current_version
+          current_version_comparision = current_version
         end
       end
 
       puts "Cask: #{cask_name}, Current: #{current_version}, Latest: #{latest_version}"
-      puts "Needs update #{Gem::Version.new(latest_version) > Gem::Version.new(current_version) ? 'yes' : 'no'}"
+      puts "Needs update #{Gem::Version.new(latest_version_comparision) > Gem::Version.new(current_version_comparision) ? 'yes' : 'no'}"
       # Do --newer-only manually since some casks don't follow convention.
-      if Gem::Version.new(latest_version) > Gem::Version.new(current_version)
+      if Gem::Version.new(latest_version_comparision) > Gem::Version.new(current_version_comparision)
         begin
           brew 'bump-cask-pr',
             '--no-audit',

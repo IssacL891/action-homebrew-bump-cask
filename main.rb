@@ -180,7 +180,7 @@ module Homebrew
       current_version = info['version']['current']
 
       # mangayomi doesn't follow convention. Need to fix format to 0.0.00 e.g. 0.6.5 -> 0.6.50
-      if cask_name == 'mangayomi'
+      if cask_name.split('/').last == 'mangayomi'
         # Pad patch version with zero if only one digit
         if latest_version =~ /^(\d+\.\d+)\.(\d)$/
           latest_version = "#{$1}.#{$2}0"

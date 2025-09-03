@@ -194,6 +194,8 @@ module Homebrew
         end
       end
 
+      puts "Cask: #{cask_name}, Current: #{current_version}, Latest: #{latest_version}"
+      puts "Needs update #{Gem::Version.new(latest_version) > Gem::Version.new(current_version) ? 'yes' : 'no'}"
       # Do --newer-only manually since some casks don't follow convention.
       if Gem::Version.new(latest_version) > Gem::Version.new(current_version)
         begin

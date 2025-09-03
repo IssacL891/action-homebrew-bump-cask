@@ -159,12 +159,21 @@ module Homebrew
       'livecheck',
       '--cask',
       # '--quiet', # don't suppress error output in logs
-      '--newer-only'
-      '--full-name',
-      '--json',
-      *("--tap=#{tap_path}" if !tap_path.blank? && cask_full_name.blank?),
+      # '--newer-only'
+      '--full-name'
+      '--json'
+      *("--tap=#{tap_path}" if !tap_path.blank? && cask_full_name.blank?)
       *(cask_full_name      unless                 cask_full_name.blank?)
     json = JSON.parse json
+
+    # output current vs lastest for debuging
+    json.each do |info|
+      next unless info['version']
+
+      cask_name = info['cask']
+      version = info['version']['latest']
+      puts "Cask: #{cask_name}, Current Version: #{version}"
+    end
 
     # Define error
     err = nil

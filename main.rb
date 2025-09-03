@@ -171,8 +171,11 @@ module Homebrew
       next unless info['version']
 
       cask_name = info['cask']
-      version = info['version']['latest']
-      puts "Cask: #{cask_name}, Current Version: #{version}"
+      latest_version = info['version']['latest']
+      current_version = info['version']['current']
+      puts "Cask: #{cask_name}, Current Version: #{current_version}"
+      puts "Latest Version: #{latest_version}"
+      puts "Need update: #{Gem::Version.new(latest_version) > Gem::Version.new(current_version)}"
     end
 
     # Define error

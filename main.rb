@@ -159,10 +159,10 @@ module Homebrew
       'livecheck',
       '--cask',
       # '--quiet', # don't suppress error output in logs
-      # '--newer-only'
+      # '--newer-only',
       '--full-name',
       '--json',
-      *("--tap=#{tap_path}" if !tap_path.blank? && cask_full_name.blank?)
+      *("--tap=#{tap_path}" if !tap_path.blank? && cask_full_name.blank?),
       *(cask_full_name      unless                 cask_full_name.blank?)
     json = JSON.parse json
 

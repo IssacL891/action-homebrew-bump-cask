@@ -191,19 +191,21 @@ module Homebrew
 
       # Do --newer-only manually since some casks don't follow convention.
       if Gem::Version.new(latest_version) > Gem::Version.new(current_version)
-        brew 'bump-cask-pr',
-          '--no-audit',
-          '--no-browse',
-          "--message=#{message}",
-          "--version=#{latest_version}",
-          *("--fork-org=#{org}"	unless org   .blank?),
-          *("--no-fork"        	unless no_fork.false?),
-          *('--force'          	unless force .false?),
-          *('--dry-run'        	unless dryrun.false?),
-          cask_name
-      rescue ErrorDuringExecution => e
-        # Continue execution on error, but save the exeception
-        err = e
+        begin
+          brew 'bump-cask-pr',
+            '--no-audit',
+            '--no-browse',
+            "--message=#{message}",
+            "--version=#{latest_version}",
+            *("--fork-org=#{org}"	unless org   .blank?),
+            *("--no-fork"        	unless no_fork.false?),
+            *('--force'          	unless force .false?),
+            *('--dry-run'        	unless dryrun.false?),
+            cask_name
+        rescue ErrorDuringExecution => e
+          # Continue execution on error, but save the exeception
+          err = e
+        end
       end
     end
 

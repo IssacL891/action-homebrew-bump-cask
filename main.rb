@@ -160,8 +160,8 @@ module Homebrew
       '--cask',
       # '--quiet', # don't suppress error output in logs
       # '--newer-only'
-      '--full-name'
-      '--json'
+      '--full-name',
+      '--json',
       *("--tap=#{tap_path}" if !tap_path.blank? && cask_full_name.blank?)
       *(cask_full_name      unless                 cask_full_name.blank?)
     json = JSON.parse json
@@ -172,7 +172,7 @@ module Homebrew
 
       cask_name = info['cask']
       version = info['version']['latest']
-      # puts "Cask: #{cask_name}, Current Version: #{version}"
+      puts "Cask: #{cask_name}, Current Version: #{version}"
     end
 
     # Define error

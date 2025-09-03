@@ -166,18 +166,6 @@ module Homebrew
       *(cask_full_name      unless                 cask_full_name.blank?)
     json = JSON.parse json
 
-    # # output current vs latest
-    # json.each do |info|
-    #   next unless info['version']
-
-    #   cask_name = info['cask']
-    #   latest_version = info['version']['latest']
-    #   current_version = info['version']['current']
-    #   puts "Cask: #{cask_name}, Current Version: #{current_version}"
-    #   puts "Latest Version: #{latest_version}"
-    #   puts "Need update: #{Gem::Version.new(latest_version) > Gem::Version.new(current_version)}"
-    # end
-
     # Define error
     err = nil
 
@@ -217,7 +205,6 @@ module Homebrew
         # Continue execution on error, but save the exeception
         err = e
       end
-    end
 
     # Die if error occured
     odie err if err

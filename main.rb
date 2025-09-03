@@ -172,36 +172,36 @@ module Homebrew
 
       cask_name = info['cask']
       version = info['version']['latest']
-      puts "Cask: #{cask_name}, Current Version: #{version}"
+      # puts "Cask: #{cask_name}, Current Version: #{version}"
     end
 
     # Define error
     err = nil
 
-    # Loop over livecheck info
-    json.each do |info|
-      # Skip if there is no version field
-      next unless info['version']
+    # # Loop over livecheck info
+    # json.each do |info|
+    #   # Skip if there is no version field
+    #   next unless info['version']
 
-      # Get info about cask
-      cask_name = info['cask']
-      version = info['version']['latest']
+    #   # Get info about cask
+    #   cask_name = info['cask']
+    #   version = info['version']['latest']
 
-      begin # Finally bump the cask
-        brew 'bump-cask-pr',
-          '--no-audit',
-          '--no-browse',
-          "--message=#{message}",
-          "--version=#{version}",
-          *("--fork-org=#{org}"	unless org   .blank?),
-          *("--no-fork"        	unless no_fork.false?),
-          *('--force'          	unless force .false?),
-          *('--dry-run'        	unless dryrun.false?),
-          cask_name
-      rescue ErrorDuringExecution => e
-        # Continue execution on error, but save the exeception
-        err = e
-      end
+      # begin # Finally bump the cask
+      #   brew 'bump-cask-pr',
+      #     '--no-audit',
+      #     '--no-browse',
+      #     "--message=#{message}",
+      #     "--version=#{version}",
+      #     *("--fork-org=#{org}"	unless org   .blank?),
+      #     *("--no-fork"        	unless no_fork.false?),
+      #     *('--force'          	unless force .false?),
+      #     *('--dry-run'        	unless dryrun.false?),
+      #     cask_name
+      # rescue ErrorDuringExecution => e
+      #   # Continue execution on error, but save the exeception
+      #   err = e
+      # end
     end
 
     # Die if error occured

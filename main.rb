@@ -186,6 +186,7 @@ module Homebrew
           latest_version = "#{$1}.#{$2}0"
         elsif latest_version =~ /^(\d+\.\d+)\.(\d{2,})$/
           latest_version = latest_version
+        end
         if current_version =~ /^(\d+\.\d+)\.(\d)$/
           current_version = "#{$1}.#{$2}0"
         elsif current_version =~ /^(\d+\.\d+)\.(\d{2,})$/

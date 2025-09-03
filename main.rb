@@ -166,46 +166,58 @@ module Homebrew
       *(cask_full_name      unless                 cask_full_name.blank?)
     json = JSON.parse json
 
-    # output current vs lastest for debuging
-    json.each do |info|
-      next unless info['version']
+    # # output current vs latest
+    # json.each do |info|
+    #   next unless info['version']
 
-      cask_name = info['cask']
-      latest_version = info['version']['latest']
-      current_version = info['version']['current']
-      puts "Cask: #{cask_name}, Current Version: #{current_version}"
-      puts "Latest Version: #{latest_version}"
-      puts "Need update: #{Gem::Version.new(latest_version) > Gem::Version.new(current_version)}"
-    end
+    #   cask_name = info['cask']
+    #   latest_version = info['version']['latest']
+    #   current_version = info['version']['current']
+    #   puts "Cask: #{cask_name}, Current Version: #{current_version}"
+    #   puts "Latest Version: #{latest_version}"
+    #   puts "Need update: #{Gem::Version.new(latest_version) > Gem::Version.new(current_version)}"
+    # end
 
     # Define error
     err = nil
 
-    # # Loop over livecheck info
-    # json.each do |info|
-    #   # Skip if there is no version field
-    #   next unless info['version']
+    # Loop over livecheck info
+    json.each do |info|
+      # Skip if there is no version field
+      next unless info['version']
 
-    #   # Get info about cask
-    #   cask_name = info['cask']
-    #   version = info['version']['latest']
+      # Get info about cask
+      cask_name = info['cask']
+      latest_version = info['version']['latest']
+      current_version = info['version']['current']
 
-      # begin # Finally bump the cask
-      #   brew 'bump-cask-pr',
-      #     '--no-audit',
-      #     '--no-browse',
-      #     "--message=#{message}",
-      #     "--version=#{version}",
-      #     *("--fork-org=#{org}"	unless org   .blank?),
-      #     *("--no-fork"        	unless no_fork.false?),
-      #     *('--force'          	unless force .false?),
-      #     *('--dry-run'        	unless dryrun.false?),
-      #     cask_name
-      # rescue ErrorDuringExecution => e
-      #   # Continue execution on error, but save the exeception
-      #   err = e
-      # end
-    # end
+      # mangayomi doesn't follow convention. Need to fix format to 0.0.00 e.g. 0.6.5 -> 0.6.50
+      if cask_name == 'mangayomi'
+        # Pad patch version with zero if only one digit
+        if latest_version =~ /^(\d+\.\d+)\.(\d)$/
+          latest_version = "#{$1}.#{$2}0"
+        elsif latest_version =~ /^(\d+\.\d+)\.(\d{2,})$/
+          latest_version = latest_version
+        end
+      end
+
+      # Do --newer-only manually since some casks don't follow convention.
+      if Gem::Version.new(latest_version) > Gem::Version.new(current_version)
+        brew 'bump-cask-pr',
+          '--no-audit',
+          '--no-browse',
+          "--message=#{message}",
+          "--version=#{latest_version}",
+          *("--fork-org=#{org}"	unless org   .blank?),
+          *("--no-fork"        	unless no_fork.false?),
+          *('--force'          	unless force .false?),
+          *('--dry-run'        	unless dryrun.false?),
+          cask_name
+      rescue ErrorDuringExecution => e
+        # Continue execution on error, but save the exeception
+        err = e
+      end
+    end
 
     # Die if error occured
     odie err if err

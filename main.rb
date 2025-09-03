@@ -202,7 +202,7 @@ module Homebrew
       #   # Continue execution on error, but save the exeception
       #   err = e
       # end
-    end
+    # end
 
     # Die if error occured
     odie err if err

@@ -30,6 +30,10 @@ module Homebrew
     raise ActionCommandError, e.message
   end
 
+  def abort_with_error(message)
+    Kernel.abort "Error: #{message}"
+  end
+
   def brew(*args)
     run_command ENV["HOMEBREW_BREW_FILE"], *args
   end
@@ -41,7 +45,7 @@ module Homebrew
   def read_brew(*args)
     print_command ENV["HOMEBREW_BREW_FILE"], *args
     output = `#{ENV["HOMEBREW_BREW_FILE"]} #{args.join(' ')}`.chomp
-    odie output if $CHILD_STATUS.exitstatus != 0
+    abort_with_error output if $CHILD_STATUS.exitstatus != 0
     output
   end
 
@@ -71,8 +75,8 @@ module Homebrew
 
   # Check inputs
   if livecheck.false?
-    odie "Need 'cask' input specified" if cask_name.blank?
-    odie "Need 'tag' input specified"  if tag_path .blank?
+    abort_with_error "Need 'cask' input specified" if cask_name.blank?
+    abort_with_error "Need 'tag' input specified"  if tag_path .blank?
   end
 
   # Avoid using the GitHub API whenever possible.
@@ -209,6 +213,6 @@ module Homebrew
     end
 
     # Die if error occured
-    odie err.message if err
+    abort_with_error err.message if err
   end
 end

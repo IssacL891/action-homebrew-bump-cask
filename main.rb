@@ -17,18 +17,25 @@ end
 module Homebrew
   module_function
 
+  class ActionCommandError < StandardError; end
+
   def print_command(*cmd)
     puts "[command]#{cmd.join(' ').gsub("\n", ' ')}"
   end
 
+  def run_command(executable, *args)
+    print_command executable, *args
+    Kernel.system executable, *args, exception: true
+  rescue RuntimeError, SystemCallError => e
+    raise ActionCommandError, e.message
+  end
+
   def brew(*args)
-    print_command ENV["HOMEBREW_BREW_FILE"], *args
-    safe_system ENV["HOMEBREW_BREW_FILE"], *args
+    run_command ENV["HOMEBREW_BREW_FILE"], *args
   end
 
   def git(*args)
-    print_command ENV["HOMEBREW_GIT"], *args
-    safe_system ENV["HOMEBREW_GIT"], *args
+    run_command ENV["HOMEBREW_GIT"], *args
   end
 
   def read_brew(*args)
@@ -178,28 +185,11 @@ module Homebrew
       cask_name = info['cask']
       latest_version = info['version']['latest']
       current_version = info['version']['current']
-      latest_version_comparision = latest_version
-      current_version_comparision = current_version
-
-      # mangayomi doesn't follow convention. Need to fix format to 0.0.00 e.g. 0.6.5 -> 0.6.50 for comparision
-      if cask_name.split('/').last == 'mangayomi'
-        # Pad patch version with zero if only one digit
-        if latest_version_comparision =~ /^(\d+\.\d+)\.(\d)$/
-          latest_version_comparision = "#{$1}.#{$2}0"
-        elsif latest_version =~ /^(\d+\.\d+)\.(\d{2,})$/
-          latest_version_comparision = latest_version
-        end
-        if current_version_comparision =~ /^(\d+\.\d+)\.(\d)$/
-          current_version_comparision = "#{$1}.#{$2}0"
-        elsif current_version =~ /^(\d+\.\d+)\.(\d{2,})$/
-          current_version_comparision = current_version
-        end
-      end
 
       puts "Cask: #{cask_name}, Current: #{current_version}, Latest: #{latest_version}"
-      puts "Needs update #{Gem::Version.new(latest_version_comparision) > Gem::Version.new(current_version_comparision) ? 'yes' : 'no'}"
+      puts "Needs update #{Gem::Version.new(latest_version) > Gem::Version.new(current_version) ? 'yes' : 'no'}"
       # Do --newer-only manually since some casks don't follow convention.
-      if Gem::Version.new(latest_version_comparision) > Gem::Version.new(current_version_comparision)
+      if Gem::Version.new(latest_version) > Gem::Version.new(current_version)
         begin
           brew 'bump-cask-pr',
             '--no-audit',
@@ -211,7 +201,7 @@ module Homebrew
             *('--force'          	unless force .false?),
             *('--dry-run'        	unless dryrun.false?),
             cask_name
-        rescue ErrorDuringExecution => e
+        rescue ActionCommandError => e
           # Continue execution on error, but save the exeception
           err = e
         end
@@ -219,6 +209,6 @@ module Homebrew
     end
 
     # Die if error occured
-    odie err if err
+    odie err.message if err
   end
 end
